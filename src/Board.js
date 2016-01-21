@@ -181,20 +181,22 @@
       var counter = 0;
       var x, y;
 
-      if (minorDiagonalColumnIndexAtFirstRow >= 0) {
+      if (minorDiagonalColumnIndexAtFirstRow > 0) {
         x = 0; 
         y = minorDiagonalColumnIndexAtFirstRow;
-        while (y >= 0) {
+        while (y >= 0 && x < length) {
           if (_matrix[x][y]) {
             counter++;
           }
           x++; y--; 
         }
+      } else if (minorDiagonalColumnIndexAtFirstRow === 0 || minorDiagonalColumnIndexAtFirstRow === 3) {
+        return false;
       } else {
         x = Math.abs(minorDiagonalColumnIndexAtFirstRow); 
         y = length-1;
         while (x < length) {
-          if (_matrix[x][y]) {
+          if (_matrix && _matrix[x][y]) {
             counter++;
           }
           x++; y--; 
@@ -207,11 +209,11 @@
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
       var self = this;
-      return this.rows().reduce(function(result, _, index){
-        if (index === self.length - 1) {
-          return result || self.hasMinorDiagonalConflictAt(index);
+      return this.rows().reduce(function(result, _, colIndex){
+        if (colIndex === self.length - 1) {
+          return result || self.hasMinorDiagonalConflictAt(colIndex);
         } else {
-          return result || self.hasMinorDiagonalConflictAt(index) || self.hasMinorDiagonalConflictAt(-index);
+          return result || self.hasMinorDiagonalConflictAt(colIndex) || self.hasMinorDiagonalConflictAt(-colIndex);
         }
       }, false);
     }
