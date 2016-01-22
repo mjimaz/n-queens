@@ -59,38 +59,24 @@ window.findNQueensSolution = function(n) {
 
   // define recursive function which finds a single solution;
   var findNQueenSolutionRecursion = function(rowIndex){ 
-    // check if number of queens equals n
-   //debugger;
     if(queens.length === n){
-      // if so, return true;
       return true;
     }
     
     // declare an empty array which holds the coordinates of all available positions on each row
     var availableSpot = [];
     var conflict;
-      // find if space has a conflict with any of the prior queens
-        // conflict option 1: column conflict
-          // if colIndex of any of the existing queens equals colIndex of the current space
-        // conflict option 2: diagonal conflict
-          // if absolute value of (any existing queen's X minus current spot's X) === absolute value of 
-                               // (any existing queen's Y  minus current spot's Y)    
-      // push into array only if current space does not have a conflict with any of the prior queens
     for(var colIndex = 0 ; colIndex < n ; colIndex++){
-    // loop over current row to find all available spaces and push their coordinates to array
       conflict = false;
       if(rowIndex === 0){
         availableSpot.push([rowIndex, colIndex]);
       }else{
-        
         for(var i = 0 ; i < queens.length ; i++){
-          //check column conflict
           if(queens[i][1] === colIndex || (Math.abs(queens[i][0] - rowIndex) === Math.abs(queens[i][1] - colIndex))){
             conflict = true;
             break;
           }
         }
-
         if(!conflict){
           availableSpot.push([rowIndex, colIndex]);
         }
@@ -98,23 +84,14 @@ window.findNQueensSolution = function(n) {
     }
 
     while(!foundSolution && availableSpot.length){
-    // while loop 
-      // select one random spot form available spots array
-      // assign it to a queen in the queens object
-      // remove that spot from available spots array
       queens.push(availableSpot.pop());
-      // findSolution = recurse for next row
       foundSolution = foundSolution || findNQueenSolutionRecursion(rowIndex+1);
-      // findSolution is False ?
       if(!foundSolution){
-        // delete the last queen
         queens.pop();
       }
-
       if(!availableSpot.length && !foundSolution){
         return false;
       }
-
     }
 
     return foundSolution;
@@ -138,42 +115,48 @@ window.findNQueensSolution = function(n) {
     solution.togglePiece(pair[0], pair[1]);
   });
   
-  // call recursive function within main function body 
-
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution.rows();
 };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = 0; 
+  var queens = [];
 
+  var findNQueenSolutionRecursion = function(rowIndex){ 
+    if(queens.length === n){
+      solutionCount++;
+    }
+        
+    var availableSpot = [];
+    var conflict;
+    for(var colIndex = 0 ; colIndex < n ; colIndex++){
+      conflict = false;
+      if(rowIndex === 0){
+        availableSpot.push([rowIndex, colIndex]);
+      }else{
+        for(var i = 0 ; i < queens.length ; i++){
+          if(queens[i][1] === colIndex || (Math.abs(queens[i][0] - rowIndex) === Math.abs(queens[i][1] - colIndex))){
+            conflict = true;
+            break;
+          }
+        }
+        if(!conflict){
+          availableSpot.push([rowIndex, colIndex]);
+        }
+      }
+    }
+
+    while(availableSpot.length){
+      queens.push(availableSpot.pop());
+      findNQueenSolutionRecursion(rowIndex+1);
+      queens.pop();
+    }
+  };
+
+  findNQueenSolutionRecursion(0);    
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
 };
